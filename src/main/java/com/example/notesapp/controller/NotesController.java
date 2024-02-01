@@ -1,22 +1,43 @@
 package com.example.notesapp.controller;
 
+import com.example.notesapp.request.Note;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class NotesController {
 
-    List<String> notes = new ArrayList<>();
+    Map<String, List<Note>> notes = new HashMap<>();
 
-    @GetMapping("/notes")
-    public List<String> getAllNotes(@RequestParam(value = "myName", defaultValue = "World") String name) {
-        return notes;
+    @GetMapping("/api/notes")
+    public List<Note> getAllNotes(@RequestHeader String token) {
+        if (!notes.containsKey(token)) {
+            return null;
+        }
+        return notes.get(token);
     }
 
-    @PostMapping("/notes")
-    public void createNote(@RequestBody String text) {
-        notes.add(text);
+    @GetMapping("/api/notes/{noteID}")
+    public Note getNoteByID(@RequestHeader String token, @PathVariable String noteID) {
+        if (!notes.containsKey(token)) {
+            return null;
+        }
+        return notes.get(token)
+            .stream()
+            .filter(noteForUser -> noteForUser.getId().equals(noteID))
+            .toList()
+            .get(0);
+    }
+
+    @PostMapping("/api/notes")
+    public void createNote(@RequestHeader String token, @RequestBody Note note) {
+        if (!notes.containsKey(token)) {
+            notes.put(token, new ArrayList<>());
+        }
+        notes.get(token).add(note);
     }
 }
