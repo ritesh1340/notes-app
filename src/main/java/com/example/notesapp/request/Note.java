@@ -1,20 +1,15 @@
 package com.example.notesapp.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.UUID;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Note {
-    private String text;
     private String id;
-
-    public Note() {
-
-    }
-
-    public Note(String text) {
-        this.text = text;
-        this.id = UUID.randomUUID().toString();
-    }
+    private String text;
 }

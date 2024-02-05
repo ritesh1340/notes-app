@@ -3,10 +3,7 @@ package com.example.notesapp.controller;
 import com.example.notesapp.request.Note;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class NotesController {
@@ -35,6 +32,7 @@ public class NotesController {
 
     @PostMapping("/api/notes")
     public void createNote(@RequestHeader String token, @RequestBody Note note) {
+        note.setId(UUID.randomUUID().toString());
         if (!notes.containsKey(token)) {
             notes.put(token, new ArrayList<>());
         }
