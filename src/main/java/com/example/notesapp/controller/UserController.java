@@ -2,33 +2,31 @@ package com.example.notesapp.controller;
 
 import com.example.notesapp.request.User;
 import com.example.notesapp.service.impl.TokenGenerationServiceImpl;
+import com.example.notesapp.service.impl.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 public class UserController {
 
-    Map<String, User> users = new HashMap<>();
-    TokenGenerationServiceImpl tokenGenerationService = new TokenGenerationServiceImpl();
+    @Autowired
+    TokenGenerationServiceImpl tokenGenerationService;
+
+    @Autowired
+    UserServiceImpl userService;
 
     @PostMapping("/api/auth/signup")
-    public String createUser(@RequestBody User user) {
-        if (users.containsKey(user.getUserID())) {
-            return "userID already exists, pick different ID";
-        }
-        users.put(user.getUserID(), user);
-        return "new user created!";
+    public User create(@RequestBody User user) {
+        return userService.create(user).toCompletableFuture().join();
     }
 
     @PostMapping("/api/auth/login")
     public String signIn(@RequestBody User user) {
-        if (users.containsKey(user.getUserID()) && users.get(user.getUserID()).getPassword().equals(user.getPassword())) {
-            return tokenGenerationService.generateToken(user);
-        }
-        return "Invalid Request";
+        return userService.get(user.getUserID())
+            .thenApply(existingUser -> tokenGenerationService.generateToken(existingUser))
+            .toCompletableFuture()
+            .join();
     }
 }

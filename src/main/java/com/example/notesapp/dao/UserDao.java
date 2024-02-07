@@ -1,6 +1,7 @@
 package com.example.notesapp.dao;
 
 import com.example.notesapp.request.User;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+@Component
 public class UserDao {
 
     public Map<String, User> users = new HashMap<>();
@@ -17,19 +19,11 @@ public class UserDao {
     }
 
     public CompletionStage<User> create(User user) {
-        return get(user.getUserID())
-            .thenApply(optionalUser -> optionalUser.orElseGet(() -> {
-                users.put(user.getUserID(), user);
-                return user;
-            }));
+        users.put(user.getUserID(), user);
+        return CompletableFuture.completedFuture(user);
     }
 
-    public CompletionStage<Optional<User>> update(User user) {
-        return get(user.getUserID())
-            .thenApply(OptionalUser -> OptionalUser.map((ignore) -> {
-                    users.put(user.getUserID(), user);
-                    return user;
-                })
-            );
+    public CompletionStage<User> update(User user) {
+        return create(user);
     }
 }
