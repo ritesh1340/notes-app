@@ -2,6 +2,7 @@ package com.example.notesapp.service.impl;
 
 import com.example.notesapp.dao.UserDao;
 import com.example.notesapp.request.User;
+import exception.InvalidTokenException;
 import exception.UserCredentialsMismatchException;
 import exception.UserMismatchException;
 import exception.UserNotFoundException;
@@ -33,6 +34,21 @@ public class UserServiceImpl {
             .thenApply(existingUser -> checkPasswordAndGenerateToken(user, existingUser));
     }
 
+    public CompletionStage<User> update(User user, String token) {
+        return validateToken(user, token).thenCompose(__ -> userDao.update(user));
+    }
+
+    public CompletionStage<String> validateToken(User user, String token) {
+        return get(user.getUserID())
+            .thenApply(__ -> tokenGenerationService.generateToken(user.getUserID()))
+            .thenApply(generatedToken -> {
+                if (generatedToken.equals(token)) {
+                    return generatedToken;
+                }
+                throw new InvalidTokenException(user.getUserID());
+            });
+    }
+
     private String checkPasswordAndGenerateToken(User user, User existingUser) {
         if (existingUser.getPassword().equals(user.getPassword())) {
             return tokenGenerationService.generateToken(user.getUserID());
@@ -43,11 +59,6 @@ public class UserServiceImpl {
     private CompletionStage<User> get(String userID) {
         return userDao.get(userID)
             .thenApply(userOptional -> userOptional.orElseThrow(() -> new UserNotFoundException(userID)));
-    }
-
-    private CompletionStage<User> update(User user) {
-        return get(user.getUserID())
-            .thenCompose(__ -> userDao.update(user));
     }
 
     private CompletableFuture<User> checkIdempotency(User user, User existingUser) {
