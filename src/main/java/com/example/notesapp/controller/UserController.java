@@ -8,25 +8,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletionStage;
+
 @RestController
 public class UserController {
-
-    @Autowired
-    TokenGenerationServiceImpl tokenGenerationService;
 
     @Autowired
     UserServiceImpl userService;
 
     @PostMapping("/api/auth/signup")
-    public User create(@RequestBody User user) {
-        return userService.create(user).toCompletableFuture().join();
+    public CompletionStage<User> create(@RequestBody User user) {
+        return userService.create(user);
     }
 
     @PostMapping("/api/auth/login")
-    public String signIn(@RequestBody User user) {
-        return userService.get(user.getUserID())
-            .thenApply(existingUser -> tokenGenerationService.generateToken(existingUser))
-            .toCompletableFuture()
-            .join();
+    public CompletionStage<String> signIn(@RequestBody User user) {
+        return userService.getToken(user);
     }
 }
