@@ -1,7 +1,6 @@
 package com.example.notesapp.controller;
 
 import com.example.notesapp.request.User;
-import com.example.notesapp.service.impl.TokenGenerationServiceImpl;
 import com.example.notesapp.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

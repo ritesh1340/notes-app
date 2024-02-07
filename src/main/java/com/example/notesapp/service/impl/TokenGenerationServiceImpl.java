@@ -1,6 +1,5 @@
 package com.example.notesapp.service.impl;
 
-import com.example.notesapp.request.User;
 import org.springframework.stereotype.Component;
 
 @Component
