@@ -20,7 +20,7 @@ public class NotesController {
         this.userService = userService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public CompletionStage<NotesResponse> getAll(@RequestHeader String token, @PathVariable String userID) {
         return userService.validateToken(userID, token)
             .thenCompose(__ -> notesService.getAll(userID));
