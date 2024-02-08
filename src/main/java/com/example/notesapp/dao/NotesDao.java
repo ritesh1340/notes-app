@@ -48,7 +48,7 @@ public class NotesDao {
 
     public CompletionStage<Void> deleteByID(String userID, String noteID) {
         Optional.ofNullable(notes.get(userID))
-            .map(notesOfUser -> notesOfUser.remove(userID));
+            .map(notesOfUser -> notesOfUser.remove(noteID));
         return CompletableFuture.completedFuture(null);
     }
 }
