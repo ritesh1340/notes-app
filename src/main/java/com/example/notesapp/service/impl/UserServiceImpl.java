@@ -35,17 +35,17 @@ public class UserServiceImpl {
     }
 
     public CompletionStage<User> update(User user, String token) {
-        return validateToken(user, token).thenCompose(__ -> userDao.update(user));
+        return validateToken(user.getUserID(), token).thenCompose(__ -> userDao.update(user));
     }
 
-    public CompletionStage<String> validateToken(User user, String token) {
-        return get(user.getUserID())
-            .thenApply(__ -> tokenGenerationService.generateToken(user.getUserID()))
+    public CompletionStage<String> validateToken(String userID, String token) {
+        return get(userID)
+            .thenApply(__ -> tokenGenerationService.generateToken(userID))
             .thenApply(generatedToken -> {
                 if (generatedToken.equals(token)) {
                     return generatedToken;
                 }
-                throw new InvalidTokenException(user.getUserID());
+                throw new InvalidTokenException(userID);
             });
     }
 

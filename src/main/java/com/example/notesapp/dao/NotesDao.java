@@ -1,11 +1,13 @@
 package com.example.notesapp.dao;
 
 import com.example.notesapp.request.Note;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+@Component
 public class NotesDao {
 
     Map<String, Map<String, Note>> notes = new HashMap<>();
@@ -44,7 +46,7 @@ public class NotesDao {
         return CompletableFuture.completedFuture(note);
     }
 
-    public CompletionStage<Optional<List<Note>>> deleteByID(String userID, String noteID) {
+    public CompletionStage<Void> deleteByID(String userID, String noteID) {
         Optional.ofNullable(notes.get(userID))
             .map(notesOfUser -> notesOfUser.remove(userID));
         return CompletableFuture.completedFuture(null);
