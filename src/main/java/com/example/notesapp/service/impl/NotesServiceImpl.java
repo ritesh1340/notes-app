@@ -3,7 +3,7 @@ package com.example.notesapp.service.impl;
 import com.example.notesapp.dao.NotesDao;
 import com.example.notesapp.request.Note;
 import com.example.notesapp.response.NotesResponse;
-import exception.NoteNotFoundException;
+import com.example.notesapp.exception.NoteNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletionStage;

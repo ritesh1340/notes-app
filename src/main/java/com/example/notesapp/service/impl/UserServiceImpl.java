@@ -2,10 +2,10 @@ package com.example.notesapp.service.impl;
 
 import com.example.notesapp.dao.UserDao;
 import com.example.notesapp.request.User;
-import exception.InvalidTokenException;
-import exception.UserCredentialsMismatchException;
-import exception.UserMismatchException;
-import exception.UserNotFoundException;
+import com.example.notesapp.exception.InvalidTokenException;
+import com.example.notesapp.exception.UserCredentialsMismatchException;
+import com.example.notesapp.exception.UserMismatchException;
+import com.example.notesapp.exception.UserNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
