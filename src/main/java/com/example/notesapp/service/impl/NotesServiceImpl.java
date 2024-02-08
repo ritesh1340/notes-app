@@ -6,7 +6,6 @@ import com.example.notesapp.response.NotesResponse;
 import exception.NoteNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 @Component
@@ -19,12 +18,12 @@ public class NotesServiceImpl {
 
     public CompletionStage<NotesResponse> getAll(String userID) {
         NotesResponse notesForUser = NotesResponse.builder().build();
-        notesDao.getAll(userID)
-            .thenApply(notesOptional -> notesOptional.map(notes -> notesForUser
-                .toBuilder()
-                .notes(notes)
-                .build()));
-        return CompletableFuture.completedFuture(notesForUser);
+        return notesDao.getAll(userID).thenApply(notesOptional -> notesOptional
+            .map(notes ->
+                notesForUser.toBuilder()
+                    .notes(notes)
+                    .build())
+            .orElse(notesForUser));
     }
 
     public CompletionStage<Note> create(String userID, String text) {
@@ -46,8 +45,9 @@ public class NotesServiceImpl {
         return notesDao.deleteByID(userID, noteID);
     }
 
-    public CompletionStage<Note> update(String userID, String noteID) {
+    public CompletionStage<Note> update(String userID, String noteID, String text) {
         return getByID(userID, noteID)
-            .thenCompose(note -> notesDao.updateByID(userID, note));
+            .thenCompose(note -> notesDao.updateByID(
+                userID, note.toBuilder().text(text).build()));
     }
 }
