@@ -33,11 +33,9 @@ public class TokenGenerationServiceImpl {
     }
 
     public CompletionStage<Token> getDecryptedToken(String token) throws IOException {
-        byte[] decodedBytes = cipher.decodeBase64(token);
         ObjectMapper objectMapper = new ObjectMapper();
-        String actualJsonString = new String(decodedBytes, StandardCharsets.UTF_8);
-        Token ans = objectMapper.readValue(actualJsonString, Token.class);
-        return CompletableFuture.completedFuture(ans);
+        String decodedJsonString = new String(cipher.decodeBase64(token), StandardCharsets.UTF_8);
+        return CompletableFuture.completedFuture(objectMapper.readValue(decodedJsonString, Token.class));
     }
 
     private String buildEncryptedToken(String userID, String userPassword, Instant expiry) throws JsonProcessingException {
