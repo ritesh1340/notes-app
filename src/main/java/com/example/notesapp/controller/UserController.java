@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PatchMapping("/api/users")
-    public CompletionStage<User> update(@RequestBody User user, @RequestHeader String token) throws IOException, ClassNotFoundException {
+    public CompletionStage<User> update(@RequestBody User user, @RequestHeader String token) throws IOException {
         return userService.update(user, token);
     }
 }
