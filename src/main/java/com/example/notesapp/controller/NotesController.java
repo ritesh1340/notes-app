@@ -6,6 +6,7 @@ import com.example.notesapp.service.impl.NotesServiceImpl;
 import com.example.notesapp.service.impl.UserServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.concurrent.CompletionStage;
 
 @RestController
@@ -21,37 +22,37 @@ public class NotesController {
     }
 
     @GetMapping
-    public CompletionStage<NotesResponse> getAll(@RequestHeader String token, @PathVariable String userID) {
+    public CompletionStage<NotesResponse> getAll(@RequestHeader String token, @PathVariable String userID) throws IOException {
         return userService.validateToken(userID, token)
             .thenCompose(__ -> notesService.getAll(userID));
     }
 
     @PostMapping
-    public CompletionStage<Note> create(@RequestHeader String token, @PathVariable String userID, @RequestBody String text) {
+    public CompletionStage<Note> create(@RequestHeader String token, @PathVariable String userID, @RequestBody String text) throws IOException {
         return userService.validateToken(userID, token)
             .thenCompose(__ -> notesService.create(userID, text));
     }
 
     @DeleteMapping
-    public CompletionStage<NotesResponse> deleteAll(@RequestHeader String token, @PathVariable String userID) {
+    public CompletionStage<NotesResponse> deleteAll(@RequestHeader String token, @PathVariable String userID) throws IOException {
         return userService.validateToken(userID, token)
             .thenCompose(__ -> notesService.deleteAll(userID));
     }
 
     @GetMapping("/{noteID}")
-    public CompletionStage<Note> getByID(@RequestHeader String token, @PathVariable String userID, @PathVariable String noteID) {
+    public CompletionStage<Note> getByID(@RequestHeader String token, @PathVariable String userID, @PathVariable String noteID) throws IOException {
         return userService.validateToken(userID, token)
             .thenCompose(__ -> notesService.getByID(userID, noteID));
     }
 
     @PatchMapping("/{noteID}")
-    public CompletionStage<Note> updateByID(@RequestHeader String token, @PathVariable String userID, @PathVariable String noteID, @RequestBody String text) {
+    public CompletionStage<Note> updateByID(@RequestHeader String token, @PathVariable String userID, @PathVariable String noteID, @RequestBody String text) throws IOException {
         return userService.validateToken(userID, token)
             .thenCompose(__ -> notesService.update(userID, noteID, text));
     }
 
     @DeleteMapping("/{noteID}")
-    public CompletionStage<Void> deleteByID(@RequestHeader String token, @PathVariable String userID, @PathVariable String noteID) {
+    public CompletionStage<Void> deleteByID(@RequestHeader String token, @PathVariable String userID, @PathVariable String noteID) throws IOException {
         return userService.validateToken(userID, token)
             .thenCompose(__ -> notesService.deleteByID(userID, noteID));
     }
